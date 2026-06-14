@@ -3,92 +3,77 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1f6b3a" />
+  <meta name="theme-color" content="#0f5c2f" />
   <title>四つ葉ファインダー</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div>
-      <p class="eyebrow">camera helper</p>
-      <h1>四つ葉ファインダー</h1>
-    </div>
-    <span class="privacy">端末内解析</span>
-  </header>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">CAMERA HELPER</p>
+        <h1>四つ葉ファインダー</h1>
+      </div>
+      <div id="appState" class="state-chip" aria-live="polite">待機中</div>
+    </header>
 
-  <main>
-    <section class="camera-card">
+    <section class="finder" aria-label="カメラ画面">
       <div id="stage" class="stage">
         <video id="video" playsinline muted></video>
         <canvas id="overlay"></canvas>
         <div id="emptyState" class="empty-state">
           <strong>カメラを開始</strong>
-          <span>クローバーに近づけて、葉が画面の1/3ほどに見える距離で使ってください。</span>
+          <span>クローバーに近づけて、赤い丸の場所を確認してください。</span>
         </div>
       </div>
 
       <canvas id="work" class="hidden"></canvas>
 
-      <div class="controls">
-        <button id="startBtn" class="primary">カメラ開始</button>
-        <button id="scanBtn">今すぐ解析</button>
-        <button id="stopBtn">停止</button>
-      </div>
-
-      <div class="meter">
-        <div>
-          <span class="label">候補スコア</span>
-          <strong id="bestScore">--</strong>
-        </div>
-        <div>
-          <span class="label">候補数</span>
-          <strong id="candidateCount">0</strong>
-        </div>
-        <div>
-          <span class="label">解析</span>
-          <strong id="fps">待機中</strong>
-        </div>
+      <div class="primary-controls" aria-label="操作ボタン">
+        <button id="startBtn" class="btn btn-primary" type="button">
+          <span class="btn-main">カメラ開始</span>
+          <span class="btn-sub">探しはじめる</span>
+        </button>
+        <button id="stopBtn" class="btn btn-secondary" type="button" disabled>
+          <span class="btn-main">停止</span>
+          <span class="btn-sub">カメラを止める</span>
+        </button>
       </div>
     </section>
 
-    <section class="panel">
-      <h2>使い方</h2>
-      <ol>
-        <li>明るい場所で、クローバーの群生を画面いっぱいに入れます。</li>
-        <li>赤い丸が出た場所を目視確認します。</li>
-        <li>候補が多すぎるときは「検出の厳しさ」を上げます。</li>
-      </ol>
-      <p class="note">この初版はAI学習モデルではなく、緑色抽出と「4方向に葉が広がる形」の画像処理で候補を出します。完全自動判定ではありません。</p>
+    <section class="settings-card" aria-label="検出設定">
+      <div class="setting-block">
+        <div class="setting-title">検出の厳しさ</div>
+        <div class="segmented" role="radiogroup" aria-label="検出の厳しさ">
+          <button class="seg-btn" type="button" data-setting="strictness" data-value="loose">ゆるめ</button>
+          <button class="seg-btn is-active" type="button" data-setting="strictness" data-value="normal">標準</button>
+          <button class="seg-btn" type="button" data-setting="strictness" data-value="strict">厳しめ</button>
+        </div>
+      </div>
+
+      <div class="setting-block">
+        <div class="setting-title">探す葉サイズ</div>
+        <div class="segmented" role="radiogroup" aria-label="探す葉サイズ">
+          <button class="seg-btn" type="button" data-setting="size" data-value="small">小さめ</button>
+          <button class="seg-btn is-active" type="button" data-setting="size" data-value="normal">標準</button>
+          <button class="seg-btn" type="button" data-setting="size" data-value="large">大きめ</button>
+        </div>
+      </div>
     </section>
 
-    <section class="panel">
-      <h2>調整</h2>
-      <label class="slider-row">
-        <span>検出の厳しさ</span>
-        <input id="strictness" type="range" min="0" max="100" value="52" />
-        <output id="strictnessOut">52</output>
-      </label>
-      <label class="slider-row">
-        <span>候補サイズ</span>
-        <input id="sizePref" type="range" min="0" max="100" value="48" />
-        <output id="sizePrefOut">48</output>
-      </label>
-      <label class="check-row">
-        <input id="showMask" type="checkbox" />
-        <span>緑抽出マスクを薄く表示</span>
-      </label>
-    </section>
-
-    <section class="panel">
-      <h2>判定の見方</h2>
-      <p id="hint">カメラを開始すると、四つ葉らしい候補を赤い丸で表示します。</p>
+    <section class="guide-card">
+      <details>
+        <summary>使い方とコツ</summary>
+        <ul>
+          <li>明るい場所で、影が少ない角度から映します。</li>
+          <li>クローバーの葉が画面内で小さすぎると候補が出にくくなります。</li>
+          <li>赤い丸は「発見確定」ではなく「目視確認する候補」です。</li>
+          <li>候補が多すぎる場合は「厳しめ」、出ない場合は「ゆるめ」を選びます。</li>
+        </ul>
+      </details>
     </section>
   </main>
-
-  <footer>
-    <small>Four-leaf clover candidate finder prototype</small>
-  </footer>
 
   <script src="app.js"></script>
 </body>

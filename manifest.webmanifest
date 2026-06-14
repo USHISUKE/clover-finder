@@ -3,8 +3,8 @@
   "short_name": "四つ葉",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f5f7f2",
-  "theme_color": "#1f6b3a",
+  "background_color": "#f3f7ef",
+  "theme_color": "#0f5c2f",
   "icons": [
     {
       "src": "icon.svg",
